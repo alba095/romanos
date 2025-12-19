@@ -18,7 +18,6 @@ I -> 1
 """
 
 diccionario= { 1000 : "M", 500 : "D", 100 : "C", 50 : "L", 10 : "X", 5 : "V", 1 : "I"}
-
 unidades= { 1: "I", 2:"II",3:"III",4:"IV",5:"V",6:"VI",7:"VII",8:"VIII",9:"IX"}
 decenas={10:"X",20:"XX",30:"XXX",40:"XL",50:"L",60:"LX",70: "LXX",80:"LXXX",90:"XC"}
 centenas= {100:"C", 200:"CC", 300:"CCC", 400:"CD", 500:"D", 600:"DC", 700:"DCC", 800:"DCCC", 900:"CM"}
@@ -27,11 +26,56 @@ millares={1000: "M", 2000: "MM", 3000: "MMM"}
 class RomanNumberError( Exception ):
     pass
 
+
+def num_to_roman(number):
+    rev = str(number)[::-1]
+    new = []
+
+    mult = 1   # empezamos por la unidad
+
+    for n in rev:
+        num = int(n)
+        value = num * mult
+        if value != 0:
+            new.append(value)
+        mult = mult * 10   # añadimos un cero
+
+    rome=[]
+
+    for n in new[::-1]:
+        if n in unidades:
+            rome.append(unidades[n])
+        elif n in decenas:
+            rome.append(decenas[n])
+        elif n in centenas:
+            rome.append(centenas[n])
+        elif n in millares:
+            rome.append(millares[n])
+    
+    resultado = ""
+    for r in rome:
+            resultado += r
+
+    return resultado
+
+print(num_to_roman(1994))
+
+
+
+
+
+
+
+
+
+
+
+"""
 #a. 1994 -> MCMXCIV
 def in_to_roman(number):
-    number= list(str(number))#Lo transformamos a cadena y lo descomponemos ["1","9"]
+    number= list(str(number))#Lo transformamos a cadena y lo descomponemos ["1","9","9","4"]
     print(number)
-    values= ""
+   
     for i in range(0,len(number)):
         if i == 0:
             number[i] = int(number[i]) * 1000
@@ -45,10 +89,9 @@ def in_to_roman(number):
         elif i == 3:
             number[i] = int(number[i])
             values +=unidades.get((number[i]))
+   
 
-
-    
     print(values)
     return values
+    """
 
-in_to_roman(1994)
