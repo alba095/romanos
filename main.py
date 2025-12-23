@@ -23,12 +23,51 @@ decenas={10:"X",20:"XX",30:"XXX",40:"XL",50:"L",60:"LX",70: "LXX",80:"LXXX",90:"
 centenas= {100:"C", 200:"CC", 300:"CCC", 400:"CD", 500:"D", 600:"DC", 700:"DCC", 800:"DCCC", 900:"CM"}
 millares={1000: "M", 2000: "MM", 3000: "MMM"}
 valores={"I": 1,"V": 5,"X": 10,"L": 50,"C": 100,"D": 500,"M": 1000}
+restas={ 'I': ['V', 'X'],'X': ['L', 'C'],'C': ['D', 'M']}
 
 class RomanNumberError( Exception ):
     pass
 
+def romano_valido(roman):
+    if roman == "":
+        return False
+
+    # Solo letras romanas
+    for letra in roman:
+        if letra not in valores:
+            return False
+
+    # Repeticiones incorrectas
+    repeticiones = 1
+    for i in range(1, len(roman)):
+        if roman[i] == roman[i - 1]:
+            repeticiones += 1
+            if roman[i] in ['V', 'L', 'D'] or repeticiones > 3:
+                return False
+        else:
+            repeticiones = 1
+
+    # Restas válidas
+    for i in range(len(roman) - 1):
+        actual = valores[roman[i]]
+        siguiente = valores[roman[i + 1]]
+
+        if actual < siguiente:
+            if roman[i] not in restas:
+                return False
+            if roman[i + 1] not in restas[roman[i]]:
+                return False
+
+    return True
+
 
 def num_to_roman(number):
+    if not isinstance(number, int):
+        raise TypeError("El número debe ser entero")
+
+    if number <= 0 or number > 3999:
+        raise ValueError("El número debe estar entre 1 y 3999")
+
     rev = str(number)[::-1]
     new = []
 
@@ -61,6 +100,11 @@ def num_to_roman(number):
 print(num_to_roman(1994))
 
 def roman_to_num(roman:str)-> int:
+    roman = roman.strip().upper()
+
+    if not romano_valido(roman):
+        raise ValueError("Número romano inválido")
+    
     total = 0
 
     for i in range(len(roman)):
